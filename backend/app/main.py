@@ -1,4 +1,5 @@
 import os
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
@@ -10,7 +11,12 @@ from app.database import Base, engine
 from app.errors import AppError
 from app.routers import auth, messages, tasks, teams
 
-Base.metadata.create_all(bind=engine)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    Base.metadata.create_all(bind=engine)
+    yield
+
 
 app = FastAPI(
     title="TaskFlow MVP API",
@@ -20,6 +26,7 @@ app = FastAPI(
         "`Bearer <JWT>` 형식 없이 토큰 값만 입력하면 됩니다."
     ),
     version="1.0.0",
+    lifespan=lifespan,
 )
 
 allowed_origins = os.environ.get(

@@ -38,8 +38,13 @@ def client(db_session):
             pass
 
     app.dependency_overrides[get_db] = override_get_db
-    with TestClient(app) as test_client:
-        yield test_client
+    # Intentionally not using `with TestClient(app) as test_client` here:
+    # entering the context triggers the app's startup event, which calls
+    # Base.metadata.create_all() against the real production engine
+    # (app.database.engine), touching the dev taskflow.db file. The test
+    # DB schema is already created explicitly in db_session above.
+    test_client = TestClient(app)
+    yield test_client
     app.dependency_overrides.clear()
 
 
