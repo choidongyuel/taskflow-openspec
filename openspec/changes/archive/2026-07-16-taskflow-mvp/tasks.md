@@ -2,7 +2,7 @@
 
 - [x] 1.1 백엔드 디렉토리 구조 생성 (FastAPI 앱, 라우터, 모델, 서비스 레이어 분리)
 - [x] 1.2 의존성 설치 (fastapi, uvicorn, sqlalchemy, python-jose, bcrypt, pytest, httpx)
-- [ ] 1.3 프론트엔드 디렉토리 구조 생성 (HTML 페이지 4종 + JS + Tailwind 설정)
+- [x] 1.3 프론트엔드 디렉토리 구조 생성 (HTML 페이지 4종 + JS + Tailwind 설정)
 - [x] 1.4 `DATABASE_URL` 환경변수 기반 SQLAlchemy 엔진 설정 (로컬 기본값: sqlite:///./taskflow.db)
 - [x] 1.5 FastAPI 앱 초기화 (title/description 설정, CORSMiddleware 등록 - 로컬/배포 도메인 허용)
 
