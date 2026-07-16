@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TaskFlow - 로그인</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="bg-slate-50 min-h-screen flex items-center justify-center">
+  <div class="w-full max-w-sm bg-white rounded-lg shadow-md p-8 fade-in">
+    <div class="flex justify-center mb-6">
+      <span class="bg-teal-700 text-white font-bold px-4 py-2 rounded">TaskFlow</span>
+    </div>
+
+    <h1 id="form-title" class="text-xl font-bold text-center mb-6">로그인</h1>
+
+    <form id="auth-form" class="space-y-4" novalidate>
+      <div>
+        <input
+          id="email"
+          type="email"
+          placeholder="이메일 입력"
+          class="w-full border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-600"
+          required
+        />
+        <p id="email-error" class="text-red-600 text-sm mt-1 hidden">올바른 이메일 형식이 아닙니다</p>
+      </div>
+
+      <div>
+        <input
+          id="password"
+          type="password"
+          placeholder="비밀번호 (8자 이상)"
+          class="w-full border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-600"
+          required
+        />
+        <p id="password-error" class="text-red-600 text-sm mt-1 hidden">8자 이상 입력해주세요</p>
+      </div>
+
+      <p id="server-error" class="text-red-600 text-sm hidden bg-red-50 rounded px-3 py-2"></p>
+
+      <button
+        id="submit-btn"
+        type="submit"
+        class="w-full bg-teal-700 hover:bg-teal-800 disabled:bg-slate-400 text-white font-semibold py-2 rounded transition"
+      >
+        로그인
+      </button>
+    </form>
+
+    <p class="text-center text-sm text-slate-600 mt-4">
+      <span id="toggle-prompt">계정이 없으신가요?</span>
+      <a id="toggle-link" href="#" class="text-teal-700 underline">회원가입</a>
+    </p>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth-page.js"></script>
+</body>
+</html>

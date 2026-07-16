@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TaskFlow - 팀 선택</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="bg-slate-50 min-h-screen">
+  <header class="bg-white border-b px-6 py-4 flex justify-between items-center">
+    <span class="font-bold text-teal-700">TaskFlow</span>
+    <div class="text-sm text-slate-600">
+      <span id="user-email"></span> |
+      <a href="#" id="logout-link" class="text-teal-700 underline">로그아웃</a>
+    </div>
+  </header>
+
+  <main class="max-w-2xl mx-auto p-6">
+    <div class="bg-blue-50 text-blue-800 text-sm rounded px-4 py-3 mb-6">
+      ℹ 아직 팀에 소속되지 않았습니다. 팀을 만들거나 초대코드로 합류하세요.
+    </div>
+
+    <div class="grid sm:grid-cols-2 gap-6">
+      <div class="border rounded-lg p-5 bg-white">
+        <h2 class="font-bold mb-4">+ 새 팀 만들기</h2>
+        <form id="create-team-form" class="space-y-3">
+          <input
+            id="team-name"
+            type="text"
+            maxlength="30"
+            placeholder="팀 이름 (1-30자)"
+            class="w-full border border-slate-300 rounded px-3 py-2"
+            required
+          />
+          <p id="create-team-error" class="text-red-600 text-sm hidden"></p>
+          <button type="submit" class="w-full bg-teal-700 hover:bg-teal-800 text-white font-semibold py-2 rounded">
+            만들기
+          </button>
+        </form>
+      </div>
+
+      <div class="border rounded-lg p-5 bg-white">
+        <h2 class="font-bold mb-4">초대코드로 합류</h2>
+        <form id="join-team-form" class="space-y-3">
+          <input
+            id="invite-code"
+            type="text"
+            placeholder="ABCD-1234"
+            class="w-full border border-slate-300 rounded px-3 py-2 uppercase"
+            required
+          />
+          <p class="text-xs text-slate-500">형식: 대문자 4 + 숫자 4 (하이픈 포함)</p>
+          <p id="join-team-error" class="text-red-600 text-sm hidden"></p>
+          <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 rounded">
+            합류
+          </button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/api.js"></script>
+  <script src="js/team-page.js"></script>
+</body>
+</html>

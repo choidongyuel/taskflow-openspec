@@ -1,0 +1,38 @@
+/* Small custom bits Tailwind utility classes don't cover directly */
+
+.kanban-mobile-scroller {
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.kanban-mobile-panel {
+  scroll-snap-align: start;
+}
+
+.task-card {
+  cursor: grab;
+}
+
+.task-card:active {
+  cursor: grabbing;
+}
+
+.column-drop-target {
+  outline: 2px dashed #0891b2;
+  outline-offset: -4px;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fade-in 0.15s ease-out;
+}

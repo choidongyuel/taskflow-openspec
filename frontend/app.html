@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TaskFlow</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col">
+  <!-- Header: desktop tabs / mobile hamburger -->
+  <header class="bg-white border-b px-4 md:px-6 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-4">
+      <button id="hamburger-btn" class="md:hidden text-xl leading-none">&#9776;</button>
+      <span class="font-bold text-teal-700">TaskFlow</span>
+      <span id="team-name" class="text-slate-600 text-sm hidden sm:inline"></span>
+    </div>
+
+    <nav class="hidden md:flex gap-2">
+      <button data-view="kanban" class="nav-tab px-4 py-1.5 rounded font-semibold text-slate-600">칸반</button>
+      <button data-view="chat" class="nav-tab px-4 py-1.5 rounded font-semibold text-slate-600">채팅</button>
+      <button data-view="members" class="nav-tab px-4 py-1.5 rounded font-semibold text-slate-600">멤버</button>
+    </nav>
+
+    <div class="hidden md:flex items-center gap-3 text-sm text-slate-600">
+      <span id="user-email-desktop"></span>
+      <a href="#" id="logout-link-desktop" class="text-teal-700 underline">로그아웃</a>
+    </div>
+  </header>
+
+  <!-- Mobile slide-in menu -->
+  <div id="mobile-menu" class="fixed inset-0 z-40 hidden">
+    <div id="mobile-menu-backdrop" class="absolute inset-0 bg-black/30"></div>
+    <div class="absolute left-0 top-0 bottom-0 w-64 bg-white shadow-lg p-4 fade-in">
+      <div class="flex items-center gap-3 border-b pb-4 mb-4">
+        <div class="w-9 h-9 rounded-full bg-teal-700 text-white flex items-center justify-center font-bold" id="mobile-avatar"></div>
+        <div>
+          <div id="user-email-mobile" class="text-sm font-semibold"></div>
+          <div id="team-role-mobile" class="text-xs text-slate-500"></div>
+        </div>
+      </div>
+      <button data-view="kanban" class="nav-tab-mobile w-full text-left px-3 py-2 rounded mb-1">📋 칸반</button>
+      <button data-view="chat" class="nav-tab-mobile w-full text-left px-3 py-2 rounded mb-1">💬 채팅</button>
+      <button data-view="members" class="nav-tab-mobile w-full text-left px-3 py-2 rounded mb-1">👥 팀 멤버</button>
+      <hr class="my-3" />
+      <a href="#" id="logout-link-mobile" class="block px-3 py-2 rounded text-red-600">🚪 로그아웃</a>
+    </div>
+  </div>
+
+  <main class="flex-1 flex flex-col overflow-hidden">
+    <!-- Kanban view -->
+    <section id="view-kanban" class="flex-1 flex flex-col overflow-hidden">
+      <div class="flex items-center justify-between px-4 md:px-6 py-3 gap-2 flex-wrap">
+        <div class="flex gap-2">
+          <button data-filter="" class="filter-btn px-3 py-1.5 rounded text-sm font-semibold bg-slate-100">전체</button>
+          <button data-filter="me" class="filter-btn px-3 py-1.5 rounded text-sm font-semibold bg-slate-100">@me</button>
+          <button data-filter="unassigned" class="filter-btn px-3 py-1.5 rounded text-sm font-semibold bg-slate-100">미할당</button>
+        </div>
+        <!-- Mobile column tabs -->
+        <div class="flex gap-1 md:hidden">
+          <button data-col="TODO" class="col-tab px-3 py-1 text-xs font-semibold rounded bg-slate-100">TODO</button>
+          <button data-col="DOING" class="col-tab px-3 py-1 text-xs font-semibold rounded bg-slate-100">DOING</button>
+          <button data-col="DONE" class="col-tab px-3 py-1 text-xs font-semibold rounded bg-slate-100">DONE</button>
+        </div>
+      </div>
+
+      <div id="kanban-board" class="flex-1 flex md:grid md:grid-cols-3 gap-4 px-4 md:px-6 pb-6 overflow-x-auto md:overflow-visible kanban-mobile-scroller">
+        <!-- columns injected by JS -->
+      </div>
+    </section>
+
+    <!-- Chat view -->
+    <section id="view-chat" class="hidden flex-1 flex-col overflow-hidden">
+      <div class="flex items-center justify-between px-4 md:px-6 py-3 border-b">
+        <span class="font-semibold" id="chat-title">채팅</span>
+        <span id="chat-poll-indicator" class="text-xs text-emerald-600">● 5초마다 새로고침</span>
+      </div>
+      <div id="chat-messages" class="flex-1 overflow-y-auto px-4 md:px-6 py-4 space-y-3"></div>
+      <form id="chat-form" class="border-t p-3 flex gap-2 items-end">
+        <div class="flex-1">
+          <textarea
+            id="chat-input"
+            rows="1"
+            placeholder="메시지 입력 (1000자 이내)..."
+            class="w-full border border-slate-300 rounded px-3 py-2 resize-none"
+          ></textarea>
+          <div class="text-xs mt-1"><span id="chat-char-count">0</span> / 1000</div>
+        </div>
+        <button type="submit" id="chat-send-btn" class="bg-teal-700 hover:bg-teal-800 disabled:bg-slate-400 text-white font-semibold px-4 py-2 rounded">
+          전송
+        </button>
+      </form>
+    </section>
+
+    <!-- Members view -->
+    <section id="view-members" class="hidden flex-1 overflow-y-auto p-4 md:p-6">
+      <h2 class="font-bold mb-4">팀 멤버</h2>
+      <ul id="members-list" class="space-y-2 max-w-md"></ul>
+    </section>
+  </main>
+
+  <!-- Mobile FAB -->
+  <button id="fab-add-task" class="md:hidden fixed bottom-6 right-6 w-14 h-14 rounded-full bg-teal-700 text-white text-2xl shadow-lg">+</button>
+
+  <!-- Task detail modal -->
+  <div id="task-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40">
+    <div class="bg-white rounded-lg w-full max-w-md p-6 fade-in">
+      <div class="flex justify-between items-start mb-4">
+        <h3 class="font-bold"><span id="task-modal-id" class="text-slate-400 text-sm"></span> <span id="task-modal-title-label"></span></h3>
+        <button id="task-modal-close" class="text-slate-400 hover:text-slate-700">&times;</button>
+      </div>
+
+      <label class="block text-sm text-slate-500 mb-1">제목</label>
+      <input id="task-modal-title-input" class="w-full border rounded px-3 py-2 mb-4" maxlength="100" />
+
+      <label class="block text-sm text-slate-500 mb-1">상태</label>
+      <div class="flex gap-2 mb-4" id="task-modal-status-group">
+        <button data-status="TODO" class="status-btn flex-1 border rounded py-1.5 text-sm font-semibold">TODO</button>
+        <button data-status="DOING" class="status-btn flex-1 border rounded py-1.5 text-sm font-semibold">DOING</button>
+        <button data-status="DONE" class="status-btn flex-1 border rounded py-1.5 text-sm font-semibold">DONE</button>
+      </div>
+
+      <label class="block text-sm text-slate-500 mb-1">담당자</label>
+      <select id="task-modal-assignee" class="w-full border rounded px-3 py-2 mb-4"></select>
+
+      <p class="text-xs text-slate-400 mb-4">생성자: <span id="task-modal-creator"></span> · 생성 시각: <span id="task-modal-created"></span></p>
+
+      <div class="flex gap-2">
+        <button id="task-modal-save" class="flex-1 bg-teal-700 hover:bg-teal-800 text-white font-semibold py-2 rounded">저장</button>
+        <button id="task-modal-delete" class="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded">삭제</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete confirm dialog -->
+  <div id="delete-confirm" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40">
+    <div class="bg-white rounded-lg w-full max-w-sm p-6 text-center fade-in">
+      <p class="text-2xl mb-2">⚠</p>
+      <p class="font-semibold mb-1">이 카드를 삭제하시겠습니까?</p>
+      <p id="delete-confirm-detail" class="text-sm text-slate-500 mb-4">되돌릴 수 없습니다</p>
+      <div class="flex gap-2">
+        <button id="delete-confirm-cancel" class="flex-1 border rounded py-2">취소</button>
+        <button id="delete-confirm-ok" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold rounded py-2">삭제</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile long-press status menu -->
+  <div id="mobile-status-menu" class="fixed inset-0 z-50 hidden items-end justify-center bg-black/40 md:hidden">
+    <div class="bg-white rounded-t-lg w-full max-w-md p-4 fade-in">
+      <p class="text-center text-sm text-slate-500 mb-3">상태 변경</p>
+      <div class="flex gap-2">
+        <button data-status="TODO" class="mobile-status-btn flex-1 border rounded py-2 font-semibold">TODO</button>
+        <button data-status="DOING" class="mobile-status-btn flex-1 border rounded py-2 font-semibold">DOING</button>
+        <button data-status="DONE" class="mobile-status-btn flex-1 border rounded py-2 font-semibold">DONE</button>
+      </div>
+      <button id="mobile-status-cancel" class="w-full mt-3 py-2 text-slate-500">취소</button>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/app-page.js"></script>
+</body>
+</html>
