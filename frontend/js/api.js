@@ -1,7 +1,17 @@
 // Shared API client: token storage, fetch wrapper, standard error unwrapping,
 // and a 401 interceptor that clears the token and redirects to login.
 
-const API_BASE = window.API_BASE_URL || "http://127.0.0.1:8000";
+// In production, frontend and backend are served from the same Vercel
+// project/domain, so relative paths ("") are correct and CORS never
+// enters the picture. Only fall back to the local FastAPI dev server
+// when the frontend itself is being served from the local static
+// server (python -m http.server on port 5500) used during development.
+const API_BASE =
+  window.API_BASE_URL !== undefined
+    ? window.API_BASE_URL
+    : location.port === "5500"
+    ? "http://127.0.0.1:8000"
+    : "";
 
 const TokenStore = {
   get() {

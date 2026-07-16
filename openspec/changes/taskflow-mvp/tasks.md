@@ -88,8 +88,8 @@
 
 ## 11. 배포 준비
 
-- [ ] 11.1 Vercel 프로젝트 연결 및 Vercel Storage에서 Neon(Postgres) 프로비저닝
-- [ ] 11.2 FastAPI를 Vercel 서버리스 함수로 배포하는 설정 작성 (vercel.json 등)
-- [ ] 11.3 프론트 정적 파일 Vercel 배포 설정
-- [ ] 11.4 배포 후 CORS 허용 도메인을 실제 Vercel 도메인으로 갱신
-- [ ] 11.5 배포 후 수동 스모크 테스트 (회원가입→로그인→팀생성→태스크생성→채팅 1턴, /docs 접근 확인)
+- [x] 11.1 Vercel 프로젝트 연결 및 Vercel Storage에서 Neon(Postgres) 프로비저닝
+- [x] 11.2 FastAPI를 Vercel 서버리스 함수로 배포하는 설정 작성 (vercel.json 등)
+- [x] 11.3 프론트 정적 파일 Vercel 배포 설정 (FastAPI StaticFiles 마운트로 단일 앱 서빙 — Vercel의 FastAPI 프레임워크 프리셋이 모든 요청을 함수로 라우팅하는 것으로 확인되어 별도 rewrites 대신 이 방식 채택)
+- [x] 11.4 배포 후 CORS 허용 도메인을 실제 Vercel 도메인으로 갱신
+- [x] 11.5 배포 후 수동 스모크 테스트 (회원가입→로그인→팀생성→태스크생성→채팅 1턴, /docs 접근 확인) — Playwright E2E로 대체 수행, 결과 전부 통과

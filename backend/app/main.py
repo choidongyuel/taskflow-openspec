@@ -1,15 +1,24 @@
 import os
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 from app.database import Base, engine
 from app.errors import AppError
 from app.routers import auth, messages, tasks, teams
+
+# repo_root/frontend — local dev serves it StaticFiles-style too (design.md:
+# "로컬 일체형(StaticFiles)"), and on Vercel the FastAPI framework preset
+# routes ALL requests (static assets included) through this single ASGI
+# app, so the frontend must be served from here rather than relying on
+# Vercel's separate static hosting / rewrites.
+FRONTEND_DIR = Path(__file__).resolve().parent.parent.parent / "frontend"
 
 
 @asynccontextmanager
@@ -71,7 +80,7 @@ app.include_router(tasks.router)
 app.include_router(messages.router)
 
 
-@app.get("/", tags=["Health"], summary="헬스체크")
+@app.get("/api/health", tags=["Health"], summary="헬스체크")
 def health():
     return {"status": "ok"}
 
@@ -96,3 +105,9 @@ def custom_openapi():
 
 
 app.openapi = custom_openapi
+
+if FRONTEND_DIR.is_dir():
+    # Must be mounted last: Starlette matches routes/mounts in registration
+    # order, so the explicit API routes and docs above still win; anything
+    # else (including "/") falls through to the static frontend files.
+    app.mount("/", StaticFiles(directory=str(FRONTEND_DIR), html=True), name="frontend")
